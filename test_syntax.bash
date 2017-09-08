@@ -9,8 +9,6 @@ extra_init() {
 }
 
 #@ after-all 
-extra_tear_down() {
-  :
 }
 
 #@ before

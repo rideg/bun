@@ -3,7 +3,7 @@
 # Regex patterns for annotation processing
 __ANNOTATION="^[[:space:]]*#@[[:space:]]?(test|before|after|"
 __ANNOTATION="${__ANNOTATION}skip|before-all|after-all)[[:space:]]*$"
-__FUNCTION='^[[:space:]]*([a-zA-Z_][a-zA-Z0-9_?:!]*)[[:space:]]*\([[:space:]]*\)[[:space:]]*\{?[[:space:]]*(#.*)?$'
+__FUNCTION='^[[:space:]]*(function)?[[:space:]]*([a-zA-Z_][a-zA-Z0-9_?:!]*)[[:space:]]*\([[:space:]]*\)[[:space:]]*\{?[[:space:]]*(#.*)?$'
 __COMMENT_OR_EMPTY='^[[:space:]]*(#.*)?$'
 
 declare -A __METHODS=()
@@ -28,7 +28,7 @@ read_annotations() {
      continue
    fi
    if [[ $line =~ $__FUNCTION && ${#context[@]} -ne 0 ]]; then
-     local fn=${BASH_REMATCH[1]}
+     local fn=${BASH_REMATCH[2]}
      [[ -n ${__METHODS[$fn]} ]] && \
        fatal_ "Should not have multiple function with the same name: $fn"
      __METHODS[$fn]="${!context[@]}"
@@ -46,3 +46,4 @@ read_annotations "$@"
 for f in "${!__METHODS[@]}"; do
   printf '%s -> %s\n' "$f" "${__METHODS[$f]}"
 done
+
