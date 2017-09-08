@@ -36,8 +36,9 @@ tear_down() {
   fail "Error message"
 }
 
+#@ skip
 #@ test
-this_is_a_test_with_something() {
+function this_is_a_test_with_something() {
   :
 }
 
@@ -56,3 +57,16 @@ this_is_another_test_which_will_be_skipped() {
 this_skip2() { #skipped
  :
  }
+
+
+
+ string=<<EOF
+ this is a multi line string
+ and continues
+
+ #@ test
+ this_is_a_test() {
+   ttt
+EOF
+
+
