@@ -1,16 +1,11 @@
 #!/usr/bin/env bash
 
 # Regex patterns for annotation processing
-__ANNOTATION="^[[:space:]]*#@[[:space:]]?(test|before|after|"
-__ANNOTATION="${__ANNOTATION}skip|before-all|after-all)[[:space:]]*$"
+__ANNOTATION='^[[:space:]]*#@[[:space:]]?(test|before|after|skip|before-all|after-all)[[:space:]]*$'
 __FUNCTION='^[[:space:]]*(function)?[[:space:]]*([a-zA-Z_][a-zA-Z0-9_?:!]*)[[:space:]]*\([[:space:]]*\)[[:space:]]*\{?[[:space:]]*(#.*)?$'
 __COMMENT_OR_EMPTY='^[[:space:]]*(#.*)?$'
 
 declare -A __METHODS=()
-
-fatal_() {
-  echo "$1"
-}
 
 # TODO: filter out multiline strings
 read_annotations() {
@@ -40,10 +35,4 @@ read_annotations() {
    fi
  done < "$file"
 }
-
-read_annotations "$@"
-
-for f in "${!__METHODS[@]}"; do
-  printf '%s -> %s\n' "$f" "${__METHODS[$f]}"
-done
 

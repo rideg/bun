@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+set -eE
+
+bun::help ()
+{
+  echo << EOF
+  Some help message!
+  Usage: 
+    bun [-trvn] file/directory... 
+      -t|--tap: format results in tap format
+      -r|--recursive: search forl test files recursively
+      -v|--verbose: verbose results
+      -n|--no-color: no colors will be used in the output
+      --version: version
+      -h: help
+EOF
+}
+
+bun::main ()
+{
+  pushd "${0%/*}" &> /dev/null
+  RUN_PWD="$OLDPWD"
+  cd ..
+  
+  # load utility functions
+  . lib/utlis.bash
+
+  # read initial config
+  . config
+
+  # check && create bun home directory
+  BUN_HOME="${BUN_HOME:-~/.bun}"
+  [[ -d "$BUN_HOME" ]] || mkdir -p "$BUN_HOME"
+
+  # read additional configuration
+  [[ -f "$BUN_HOME/config" ]] && . "$BUN_HOME/config"
+
+  # init internal pipe & add traps
+  bun::util::init_pipe
+  trap bun::util::print_trace ERR
+  trap bun::util::cleanup EXIT
+
+   
+}
+
+bun::main "$@"
+
