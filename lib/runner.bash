@@ -1,17 +1,16 @@
 #!/usr/bin/env bash
 
-__warning() {
+bun::runner::run ()
+{
   :
 }
 
-__run_single_file() {
+bun::runner::run_single_file ()
+{
  local fn="$1"
  read_annotation "$fn"
  for method in "${!__METHODS[@]}"; do
    
  done
 }
-
-
-
 

@@ -2,17 +2,17 @@
 
 fatal ()
 {
-  [[ $# -gt 0 ]] && printf '%s\n' "$1" 
+  [[ $# -gt 0 ]] && printf '%s\n' "$1"
   exit -1
 }
 
 throw ()
 {
   printf '%s\n' "$1" 1>&9
-  return 89 
+  return 89
 }
 
-use () 
+use ()
 {
   local plugin="$1"
   [[ -z "$plugin" ]] && fatal "Please give a plugin name to be loaded."
@@ -23,7 +23,7 @@ use ()
 
 command_not_found_handle ()
 {
-  printf 'Command not found: %s\n' "$1" >&9 
+  printf 'Command not found: %s\n' "$1" >&9
   return 89 
 }
 

@@ -2,19 +2,25 @@
 
 set -eE
 
-bun::help ()
+bun::print_help ()
 {
-  echo << EOF
-  Some help message!
-  Usage: 
-    bun [-trvn] file/directory... 
-      -t|--tap: format results in tap format
-      -r|--recursive: search forl test files recursively
-      -v|--verbose: verbose results
-      -n|--no-color: no colors will be used in the output
-      --version: version
-      -h: help
-EOF
+  echo << EOM
+Some help message!
+Usage: 
+  bun [-trvn] file/directory... 
+    -t|--tap: format results in tap format
+    -r|--recursive: search forl test files recursively
+    -v|--verbose: verbose results
+    -n|--no-color: no colors will be used in the output
+    --version: version
+    -h: help
+EOM
+exit 0
+}
+
+bun::print_verions ()
+{
+ exit 0
 }
 
 bun::main ()
@@ -22,26 +28,31 @@ bun::main ()
   pushd "${0%/*}" &> /dev/null
   RUN_PWD="$OLDPWD"
   cd ..
-  
+
   # load utility functions
   . lib/utlis.bash
 
-  # read initial config
-  . config
-
-  # check && create bun home directory
-  BUN_HOME="${BUN_HOME:-~/.bun}"
-  [[ -d "$BUN_HOME" ]] || mkdir -p "$BUN_HOME"
-
-  # read additional configuration
-  [[ -f "$BUN_HOME/config" ]] && . "$BUN_HOME/config"
+  local pass=()
+  local no_color=false 
+  for arg in "$@"; do
+    case "$arg" in 
+      --version) bun::print_verion;;
+      -h) bun::print_help;;
+      -n|--no-color) no_color=true;;
+      *) pass[${#pass[@]}]="$arg";;
+    esac
+  done
 
   # init internal pipe & add traps
   bun::util::init_pipe
   trap bun::util::print_trace ERR
   trap bun::util::cleanup EXIT
+ 
+  $no_color || . lib/color.bash 
 
-   
+  . lib/runner.bash 
+
+  bun::runner::run "${pass[@]}"
 }
 
 bun::main "$@"

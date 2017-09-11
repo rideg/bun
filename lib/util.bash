@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 
-bun::util::init_pipe () 
+bun::util::init_pipe ()
 {
-  local pipe="${BUN_HOME}/.pipe"
-  [[ -p "$pipe" ]] || mkfifo "$pipe"
-  exec 9<> "$pipe"
-  # Drain the pipe if needed.
-  read -r -u 9 -t 0 -s && read -r -u 9 -t 0.1 -s
+  local pipe_dir="$TMPDIR/bun/_$BASHPID$RANDROM$RANDOM"
+  mkdir -p "$pipe_dir" &>/dev/null
+  mkfifo "$pipe_dir/.pipe"
+  exec 9<> "$pipe_dir/.pipe"
 }
 
 bun::util::clean_up ()
 {
+  exec 9<&-
   popd &> /dev/null
 }
 
@@ -21,7 +21,7 @@ bun::util::print_trace ()
    read -r -u 9 -s msg && :
  fi
  msg="${msg:-Non-zero return value: $result}"
- printf 'Error occured: %s\n' "$msg"
+ printf 'Error occured: %s\n' "$msg" >&2
  let w=${#BASH_LINENO[@]}
  for ((i=1; i<w; i++)); do
    printf '\tin %s() at %s:%d\n' \
