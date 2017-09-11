@@ -17,8 +17,8 @@ bun::util::clean_up ()
 bun::util::print_trace ()
 {
  local result="$?"
- if [[ $result -eq 89 && read -r -u 9 -t 0 ]]; then
-   read -r -u 9 -s msg && :
+ if [[ $result -eq 89 ]]; then
+   read -r -u 9 -t 0 && read -r -u 9 -s msg
  fi
  msg="${msg:-Non-zero return value: $result}"
  printf 'Error occured: %s\n' "$msg" >&2
