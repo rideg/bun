@@ -58,9 +58,10 @@ bun::runner::traverse_directory ()
 
 bun::runner::run_file ()
 {
- local fn="$1"
- read_annotation "$fn"
- for method in "${!__METHODS[@]}"; do
+ local file="$1"
+ bun::runner:process_file "$file"
+ local methods=("${__[@]}")
+ for method in "${methods[@]}"; do
    export method
  done
 }
@@ -78,7 +79,7 @@ bun::runner::process_file ()
  local lines
  declare -A context=()
 
- export __METHODS=()
+ local methods=()
  while read -r line; do
    if [[ $line  =~ $__ANNOTATION ]]; then
      local current="${BASH_REMATCH[1]}"
@@ -90,9 +91,9 @@ bun::runner::process_file ()
 
    if [[ $line =~ $__FUNCTION && ${#context[@]} -ne 0 ]]; then
      local fn=${BASH_REMATCH[2]}
-     [[ -n ${__METHODS[$fn]} ]] && \
+     [[ -n ${methods[$fn]} ]] && \
        fatal_ "Should not have multiple function with the same name: $fn"
-     __METHODS[$fn]="${!context[*]}"
+     methods[$fn]="${!context[*]}"
      context=()
      continue
    fi
@@ -101,5 +102,6 @@ bun::runner::process_file ()
      context=()
    fi
  done < "$file"
+ __=("${methods[@]}")
 }
 
