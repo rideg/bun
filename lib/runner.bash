@@ -18,7 +18,7 @@ bun::runner::run ()
   local files=() 
   for location in "${locations[@]}"; do
     if [[ -f "$location" && -r "$location" ]]; then
-	 files[${#files[@]}]="$location" 
+	    files[${#files[@]}]="$location" 
     fi
 
     if [[ -d "$location" ]]; then
@@ -28,8 +28,12 @@ bun::runner::run ()
   done
 
   [[ ${#files[@]} -eq 0 ]] && fatal "No files to run!"
-
-  # run each file one by one
+ 
+  declare -i all=0 
+  declare -i failed=0
+  for file in "${files[@]}"; do
+    $(bun::runner::run_file "$file") 
+  done
 }
 
 bun::runner::traverse_directory ()
@@ -62,10 +66,10 @@ bun::runner::run_file ()
 }
 
 # Regex patterns for annotation processing
-__ANNOTATION='^[[:space:]]*#@[[:space:]]?'
-__ANNOTATION=$__ANNOTATION'(test|before|after|skip|before-all|after-all)[[:space:]]*$'
-__FUNCTION='^[[:space:]]*(function)?[[:space:]]*([a-zA-Z_][a-zA-Z0-9_?:!]*)'
-__FUNCTION=$__FUNCTION'[[:space:]]*\([[:space:]]*\)[[:space:]]*\{?[[:space:]]*(#.*)?$'
+__ANNOTATION='^[[:space:]]*#@[[:space:]]?(test|before|after|skip'
+__ANNOTATION=$__ANNOTATION'[[:space:]]*$|before-all|after-all)'
+__FUNCTION='^[[:space:]]*(function)?[[:space:]]*([a-zA-Z_][a-zA-Z0-9_?:!]*)[[:spa'
+__FUNCTION=$__FUNCTION'ce:]]*\([[:space:]]*\)[[:space:]]*\{?[[:space:]]*(#.*)?$'
 __COMMENT_OR_EMPTY='^[[:space:]]*(#.*)?$'
 
 bun::runner::process_file ()
