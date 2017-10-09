@@ -25,9 +25,8 @@ bun::print_verions ()
 
 bun::main ()
 {
-  pushd "${0%/*}" &> /dev/null
+  pushd "${0%/bin/*}" &> /dev/null
   local root_dir="$OLDPWD"
-  cd ..
 
   # load utility functions
   . lib/utlis.bash
@@ -55,9 +54,5 @@ bun::main ()
   bun::runner::run "$root_dir" "${pass[@]}"
 }
 
-# bun::main "$@"
-
-for name in lib/*; do
-  echo "$name"
-done
+bun::main "$@"
 
