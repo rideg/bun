@@ -4,17 +4,14 @@ set -eE
 
 bun::print_help ()
 {
-  echo << EOM
-Some help message!
-Usage: 
+  echo "Some help message! Usage: 
   bun [-trvn] file/directory... 
     -t|--tap: format results in tap format
     -r|--recursive: search forl test files recursively
     -v|--verbose: verbose results
     -n|--no-color: no colors will be used in the output
     --version: version
-    -h: help
-EOM
+    -h: help"
 exit 0
 }
 
@@ -25,11 +22,11 @@ bun::print_verions ()
 
 bun::main ()
 {
-  pushd "${0%/bin/*}" &> /dev/null
+  pushd "${0%bin/*}" &> /dev/null
   local root_dir="$OLDPWD"
 
   # load utility functions
-  . lib/utlis.bash
+  . lib/util.bash
 
   local pass=()
   local no_color=false 
