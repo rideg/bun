@@ -8,7 +8,8 @@ extra_init() {
   :
 }
 
-#@ after-all 
+#@ after-all() {
+ :
 }
 
 #@ before
